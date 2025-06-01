@@ -31,18 +31,6 @@ namespace GPUtils
             string videosDir = Paths.Configs + "/Plugins/g_p_utils/Videos";
             if (!Directory.Exists(videosDir))
                 Directory.CreateDirectory(videosDir);
-
-            IEnumerator<float> enumerator()
-            {
-                while (true)
-                {
-                    Timing.RunCoroutine(PaintToTextMain.PlayVideo("A pig on a bed", new UnityEngine.Vector3(0, 310, 0), new UnityEngine.Quaternion(0, 0, 0, 0)));
-
-                    yield return Timing.WaitForSeconds(5);
-                }
-            }
-
-            Timing.RunCoroutine(enumerator());
         }
         public override void OnDisabled()
         {
