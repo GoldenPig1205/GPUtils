@@ -1,6 +1,7 @@
 ﻿using CommandSystem;
 using Exiled.API.Features;
 using GPUtils.Features.PaintToText.Core;
+using MEC;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,17 @@ namespace GPUtils.Features.PaintToText.Commands.RemoteAdmin
             Player player = Player.Get(sender);
             string text = string.Join(" ", arguments);
 
-            PaintToTextMain.CreateText(player.Position, player.Rotation * Quaternion.Euler(0, 180, 0), $"{text.Split('_')[0]}", float.Parse(text.Split('_')[1]));
+            IEnumerator<float> enumerator()
+            {
+                string image = PaintToTextMain.ConvertImageToRichText(text.Split('_')[0]);
+                PaintToTextMain.CreateText(player.Position, player.Rotation * Quaternion.Euler(0, 180, 0), $"<size={text.Split('_')[1]}>{image}</size>", float.Parse(text.Split('_')[2]));
 
-            response = "Successfully executed ShowText command.";
+                yield break;
+            }
+
+            Timing.RunCoroutine(enumerator());
+
+            response = "Successfully executed TextPaint command.";
             return true;
         }
 

@@ -1,6 +1,7 @@
 ﻿using CommandSystem;
 using Exiled.API.Features;
 using GPUtils.Features.PaintToText.Core;
+using MEC;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -8,31 +9,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace GPUtils.Features.PaintToText.Commands.RemoteAdmin
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
-    public class ShowText : ICommand
+    public class PlayPaint : ICommand
     {
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             Player player = Player.Get(sender);
             string text = string.Join(" ", arguments);
 
-            string imagesDir = Paths.Configs + "/Plugins/g_p_utils/Images";
-            string imagePath = imagesDir + $"/{text.Split('_')[0]}";
+            Timing.RunCoroutine(PaintToTextMain.PlayVideo(text.Split('_')[0], player.Position, player.Rotation * Quaternion.Euler(0, 180, 0)));
 
-            PaintToTextMain.CreateText(player.Position, player.Rotation * Quaternion.Euler(0, 180, 0), imagePath, float.Parse(text.Split('_')[1]));
-
-            response = "Successfully executed ShowText command.";
+            response = "Successfully executed PlayVideo command.";
             return true;
         }
 
-        public string Command { get; } = "showtext";
+        public string Command { get; } = "playvideo";
 
-        public string[] Aliases { get; } = { "text", "텍스트" };
+        public string[] Aliases { get; } = { "pv" };
 
-        public string Description { get; } = "Show text.";
+        public string Description { get; } = "Play Video.";
 
         public bool SanitizeResponse { get; } = true;
     }
